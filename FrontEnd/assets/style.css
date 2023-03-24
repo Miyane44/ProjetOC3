@@ -53,6 +53,39 @@ body {
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+.flex-center {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: center;
+}
+.margin-t-100 {
+	margin-top: 100px;
+}
+.banniere {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 19px;
+	background-color: black;
+	color: #ffffff;
+	height: 60px;
+}
+.banniere i {
+	font-weight: 400;
+	padding-right: 10px;
+}
+.button-white {
+	height: 38px;
+	width: 216px;
+	margin-left: 20px;
+	font-weight: 500;
+	font-size: 14px;
+	background-color: #FFFFFF;
+	text-align: center;
+	border-radius: 60px ;
+}
 header {
 	display: flex;
 	justify-content: space-between;
@@ -106,7 +139,7 @@ a {
 a:hover {
 	cursor: pointer;
 }
-.active {
+.active-page {
 	font-weight: 600;
 }
 #introduction {
@@ -204,7 +237,7 @@ a:hover {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-input[type="submit"]{
+input[type="submit"] {
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
