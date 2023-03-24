@@ -56,39 +56,32 @@ function generateFilters(categories) {
 generateFilters(categories);
 
 /// Gestion des filtres
+function filterSelection(categorieId) {
+    const filteredWorks = works.filter(function (work) {
+        return work.categoryId === categorieId;
+    });
+    document.querySelector(".gallery").innerHTML = "";
+    generateWorks(filteredWorks);
+}
+
 const filterAll = document.querySelector(".category-all");
+const objetsFilter = document.querySelector(".category-1");
+const appartementsFilter = document.querySelector(".category-2");
+const hotelsFilter = document.querySelector(".category-3");
 
 filterAll.addEventListener("click", function () {
     document.querySelector(".gallery").innerHTML = "";
     generateWorks(works);
 });
 
-const objetsFilter = document.querySelector(".category-1");
-
 objetsFilter.addEventListener("click", function () {
-    const filteredWorks = works.filter(function (work) {
-        return work.categoryId === 1;
-    });
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(filteredWorks);
+    filterSelection(1);
 });
-
-const appartementsFilter = document.querySelector(".category-2");
 
 appartementsFilter.addEventListener("click", function () {
-    const filteredWorks = works.filter(function (work) {
-        return work.categoryId === 2;
-    });
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(filteredWorks);
+    filterSelection(2);
 });
 
-const hotelsFilter = document.querySelector(".category-3");
-
 hotelsFilter.addEventListener("click", function () {
-    const filteredWorks = works.filter(function (work) {
-        return work.categoryId === 3;
-    });
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(filteredWorks);
+    filterSelection(3);
 });

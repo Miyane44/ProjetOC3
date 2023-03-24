@@ -12,10 +12,11 @@
     crossorigin="anonymous" referrerpolicy="no-referrer">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<script type="module" src="index.js"></script>
 </head>
 <body>
 	<div id="modal" class="banniere flex-center">
-		<div class="flex-center">
+		<div class="edit-mode flex-center">
 			<i class="fa-solid fa-pen-to-square"></i><span>Mode édition</span>
 		</div>
 		<button class="button-white">publier les changements</button>
@@ -26,7 +27,7 @@
 			<ul>
 				<li>projets</li>
 				<li>contact</li>
-				<li><a class="log"></a></li>
+				<li><a class="login"></a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -35,6 +36,9 @@
 		<section id="introduction">
 			<figure>
 				<img src="./assets/images/sophie-bluel.png" alt="">
+				<div class="edit">
+					<i class="fa-solid fa-pen-to-square"></i><span>modifier</span>
+				</div>
 			</figure>
 			<article>
 				<h2>Designer d'espace</h2>
@@ -44,7 +48,13 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2 class="projets">Mes Projets</h2>
+			<div class="projet-title flex-center">
+				<h2 class="projets">Mes Projets</h2>
+				<div class="edit-projets padding-left-30 margin-b-30">
+					<i class="fa-solid fa-pen-to-square"></i>
+					<span>modifier</span>
+				</div>
+			</div>
 			<div id="categories" class="categories"></div>
 			<div class="gallery"></div>
 		</section>
@@ -71,6 +81,5 @@
 		</nav>
 	</footer>
 	<script type="module" src="works.js"></script>
-	<script type="module" src="modal.js"></script>
 </body>
 </html>

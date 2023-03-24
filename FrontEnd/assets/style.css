@@ -53,14 +53,21 @@ body {
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+.error {
+	color: red;
+}
 .flex-center {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	align-content: center;
+	align-items: center;
 }
 .margin-t-100 {
 	margin-top: 100px;
+}
+.margin-b-30 {
+	margin-bottom: 30px;
 }
 .banniere {
 	font-family: 'Work Sans';
@@ -149,12 +156,28 @@ a:hover {
 #introduction figure {
 	flex: 1
 }
-#introduction img {
+#introduction img,
+.edit {
 	display: block;
 	margin: auto;
 	width: 80%;
 }
-
+.edit {
+	padding-top: 15px;
+	font-size: 14px;
+}
+.edit i,
+.edit-projets i,
+.edit-mode i {
+	font-weight: 100;
+}
+.edit span,
+.edit-projets span {
+	padding-left: 10px;
+}
+.padding-left-30 {
+	padding-left: 30px;
+}
 #introduction article {
 	flex: 1
 }
