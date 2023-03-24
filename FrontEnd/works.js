@@ -60,7 +60,6 @@ const filterAll = document.querySelector(".category-all");
 
 filterAll.addEventListener("click", function () {
     document.querySelector(".gallery").innerHTML = "";
-    filterAll.setAttribute = "active";
     generateWorks(works);
 });
 
