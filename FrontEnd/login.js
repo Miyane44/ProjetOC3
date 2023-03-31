@@ -1,4 +1,5 @@
 const formulaire = document.querySelector(".formulaire-login");
+
 formulaire.addEventListener("submit", async function (event) {
     event.preventDefault();
     
@@ -17,14 +18,16 @@ formulaire.addEventListener("submit", async function (event) {
             body: JSON.stringify(user)
         });
 
+        const reponse = await authData.json();
         if (authData.ok === true) {
-            const reponse = await authData.json();
-
+            
             window.localStorage.setItem("token", reponse.token);
-    
-            if (reponse.token != undefined) {
-                document.location.href = "index.html";
+            window.localStorage.setItem("userToken", reponse.token);
+            
+            if (reponse != undefined) {
+            document.location.href = "index.html";
             }
+        
         } else {
             throw new Error("Erreur dans l'identifiant ou le mot de passe");
         }
@@ -38,6 +41,3 @@ formulaire.addEventListener("submit", async function (event) {
         formElement.appendChild(erreur);
     }
 });
-
-
-

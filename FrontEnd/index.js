@@ -1,5 +1,4 @@
 const loginButton = document.querySelector(".login");
-
 loginButton.addEventListener("click", function () {
     if (loginButton.innerText === 'login') {
         document.location.href = "login.html";
@@ -9,18 +8,24 @@ loginButton.addEventListener("click", function () {
     }
 });
 
-if (window.localStorage.getItem("token") != undefined) {
+const modalElement = document.querySelector(".modal");
+modalElement.style.display = "none";
+
+const token = window.localStorage.getItem("token");
+const userToken = window.localStorage.getItem("userToken");
+
+if (token != undefined && token == userToken) {
     const loginElement = document.querySelector(".login");
     loginElement.innerText = "logout";
-
+    
     document.getElementById('categories').style.display = "none";
     document.querySelector('.projet-title').className = "projet-title flex-center margin-t-100";
     document.querySelector('.gallery').className = "gallery margin-t-100";
 } else {
     const loginElement = document.querySelector(".login");
     loginElement.innerText = "login";
-
-    document.getElementById('modal').style.display = "none";
+    
+    document.getElementById('edit-mode-banniere').style.display = "none";
     document.querySelector(".edit").style.display = "none";
     document.querySelector(".edit-projets").style.display = "none";
-}
+}        
