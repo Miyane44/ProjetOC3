@@ -1,6 +1,6 @@
 // Récupération des travaux via l'API
 const worksReponse = await fetch("http://localhost:5678/api/works");
-const works = await worksReponse.json();
+export const works = await worksReponse.json();
 
 function generateWorks(works) {
     for (let i = 0; i < works.length; i++) {
@@ -35,7 +35,7 @@ function generateFilters(categories) {
     
     const filterAll = document.createElement("button");
         filterAll.innerText = "Tous";
-        filterAll.className = "category-button one category-all";
+        filterAll.className = "category-button one category-all active";
 
     for (let i = 0; i < categories.length; i++) {
         
@@ -64,24 +64,37 @@ function filterSelection(categorieId) {
     generateWorks(filteredWorks);
 }
 
-const filterAll = document.querySelector(".category-all");
-const objetsFilter = document.querySelector(".category-1");
-const appartementsFilter = document.querySelector(".category-2");
-const hotelsFilter = document.querySelector(".category-3");
+const filters = {
+    filterAll : document.querySelector(".category-all"),
+    objetsFilter : document.querySelector(".category-1"),
+    appartementsFilter : document.querySelector(".category-2"),
+    hotelsFilter : document.querySelector(".category-3")
+}
 
-filterAll.addEventListener("click", function () {
+const toggleSelectedClass = (element) => {
+    Object.entries(filters).forEach(([key, value]) => {
+        if (element === key) value.classList.add("active");
+        else value.classList.remove("active");
+    });
+}
+
+filters.filterAll.addEventListener("click", function () {
     document.querySelector(".gallery").innerHTML = "";
+    toggleSelectedClass("filterAll");
     generateWorks(works);
 });
 
-objetsFilter.addEventListener("click", function () {
+filters.objetsFilter.addEventListener("click", function () {
     filterSelection(1);
+    toggleSelectedClass("objetsFilter");
 });
 
-appartementsFilter.addEventListener("click", function () {
+filters.appartementsFilter.addEventListener("click", function () {
     filterSelection(2);
+    toggleSelectedClass("appartementsFilter");
 });
 
-hotelsFilter.addEventListener("click", function () {
+filters.hotelsFilter.addEventListener("click", function () {
     filterSelection(3);
+    toggleSelectedClass("hotelsFilter");
 });

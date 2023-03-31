@@ -15,7 +15,7 @@
 	<script type="module" src="index.js"></script>
 </head>
 <body>
-	<div id="modal" class="banniere flex-center">
+	<div id="edit-mode-banniere" class="banniere flex-center">
 		<div class="edit-mode flex-center">
 			<i class="fa-solid fa-pen-to-square"></i><span>Mode édition</span>
 		</div>
@@ -52,7 +52,7 @@
 				<h2 class="projets">Mes Projets</h2>
 				<div class="edit-projets padding-left-30 margin-b-30">
 					<i class="fa-solid fa-pen-to-square"></i>
-					<span>modifier</span>
+					<a href="#modal-projets" class="js-edit-modal">modifier</a>
 				</div>
 			</div>
 			<div id="categories" class="categories"></div>
@@ -80,6 +80,19 @@
 			</ul>
 		</nav>
 	</footer>
+	<aside id="modal-projets" class="modal" aria-hidden="true" role="dialog" aria-labelledby="title-modal">
+		<div class="modal-wrapper js-modal-stop">
+				<button class="button-close js-close-modal float-right">
+					<i class="fa-regular fa-xmark-circle"></i>
+				</button>
+				<h3 id="title-modal" class="title-modal">Galerie photo</h6>
+			<div class="gallery-photos"></div>
+			<input type="submit" value="Ajouter une photo">
+			<span class="delete-all-aworks">Supprimer la galerie</span>
+		</div>
+	</aside>
 	<script type="module" src="works.js"></script>
+	<script type="module" src="modal.js"></script>
+	<script type="module" src="photos.js"></script>
 </body>
 </html>
