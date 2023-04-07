@@ -2,15 +2,20 @@ import { works } from "./works.js";
 
 let photos = [];
 
-for (const work of works) {
-    let photo = work.imageUrl;
-    photos.push(photo);
+function photosToGenerate() {
+    for (const work of works) {
+        let photo = work.imageUrl;
+        photos.push(photo);
+    }
 }
 
-function generatePhotos(photos) {
-    for (let i = 0; i < photos.length; i++) {
+function generatePhotos(works) {
+
+    photosToGenerate();
+
+    for (const work of works) {
         
-        const figure = photos[i];
+        const figure = work.imageUrl;
 
         const galleryPhotos = document.querySelector(".gallery-photos");
 
@@ -18,16 +23,13 @@ function generatePhotos(photos) {
 
         const divElement = document.createElement("div");
         divElement.style.position = "relative";
+
+        const linkElement = document.createElement("a");
+        linkElement.className = "delete-link clickable";
         
         const iconElement = document.createElement("i");
-        iconElement.style.position = "absolute";
-        iconElement.style.textAlign = "center"
-        iconElement.style.width = "17px";
-        iconElement.style.height = "17px";
-        iconElement.style.fontSize = "9px";
-        iconElement.style.color = "#FFFFFF";
-        iconElement.style.backgroundColor = "#000000";
-        iconElement.className = "fa-solid fa-trash-can";
+        iconElement.id = work.id;
+        iconElement.className = "icon-delete fa-solid fa-trash-can";
 
         const imgElement = document.createElement("img");
         imgElement.src = figure;
@@ -38,11 +40,26 @@ function generatePhotos(photos) {
 
         galleryPhotos.appendChild(photoElement);
         photoElement.appendChild(divElement);
-        divElement.appendChild(iconElement);
+        linkElement.appendChild(iconElement);
+        divElement.appendChild(linkElement);
         divElement.appendChild(imgElement);
         photoElement.appendChild(caption);
         
     }
 }
 
-generatePhotos(photos);
+generatePhotos(works);
+
+document.querySelectorAll(".delete-link").forEach( a => {
+    a.addEventListener('click', async function (e) {
+        e.preventDefault();
+        const id = e.target.id;
+        const token = window.localStorage.getItem('token')
+        await fetch(`http://localhost:5678/api/works/${id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    })
+});

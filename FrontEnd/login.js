@@ -18,11 +18,10 @@ formulaire.addEventListener("submit", async function (event) {
             body: JSON.stringify(user)
         });
 
-        const reponse = await authData.json();
         if (authData.ok === true) {
+            const reponse = await authData.json();
             
             window.localStorage.setItem("token", reponse.token);
-            window.localStorage.setItem("userToken", reponse.token);
             
             if (reponse != undefined) {
             document.location.href = "index.html";

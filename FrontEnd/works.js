@@ -29,7 +29,7 @@ generateWorks(works);
 
 // Récupération des catégories via l'API
 const categoriesReponse = await fetch("http://localhost:5678/api/categories")
-const categories = await categoriesReponse.json();
+export const categories = await categoriesReponse.json();
 
 function generateFilters(categories) {
     
@@ -45,7 +45,7 @@ function generateFilters(categories) {
         
         const filter = document.createElement("button");
         filter.innerText = category.name;
-        filter.className = "category-button category-" + category.id;
+        filter.className = "category-button clickable category-" + category.id;
         
         categoriesElement.appendChild(filterAll);
         categoriesElement.appendChild(filter);
@@ -73,8 +73,13 @@ const filters = {
 
 const toggleSelectedClass = (element) => {
     Object.entries(filters).forEach(([key, value]) => {
-        if (element === key) value.classList.add("active");
-        else value.classList.remove("active");
+        if (element === key) {
+            value.classList.remove("clickable");
+            value.classList.add("active");
+        } else {
+            value.classList.remove("active");
+            value.classList.add("clickable");
+        }
     });
 }
 

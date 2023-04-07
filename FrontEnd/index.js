@@ -12,9 +12,8 @@ const modalElement = document.querySelector(".modal");
 modalElement.style.display = "none";
 
 const token = window.localStorage.getItem("token");
-const userToken = window.localStorage.getItem("userToken");
 
-if (token != undefined && token == userToken) {
+if (token) {
     const loginElement = document.querySelector(".login");
     loginElement.innerText = "logout";
     
