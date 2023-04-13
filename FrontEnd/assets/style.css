@@ -31,6 +31,10 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 }
+main {
+	margin-left: 95px;
+	margin-right: 95px;
+}
 ol, ul {
 	list-style: none;
 }
@@ -58,6 +62,9 @@ body {
 }
 .error {
 	color: red;
+}
+.padding-top-20 {
+	padding-top: 20px;
 }
 .flex-between {
 	display: flex;
@@ -232,8 +239,8 @@ a {
 }
 
 .gallery img {
-	width: 100%;
-
+	width: 304px;
+	height: 405px;
 }
 #contact,
 #login {
@@ -315,14 +322,23 @@ footer nav ul {
 	height: 730px;
 	border-radius: 10px;
 }
+.buttons-modal {
+	display: flex;
+	justify-content: space-between;
+}
 .button {
 	background-color: white;
 	border: none;
+	margin-top: 32px;
+}
+.button-previous {
+	text-align: start;
+	margin-left: 16px;
+	color: red;
 }
 .button-close {
-	margin-top: 32px;
-	margin-right: 16px;
 	text-align: end;
+	margin-right: 16px;
 }
 .title-modal {
 	margin-top: 16px;
@@ -381,20 +397,23 @@ footer nav ul {
 	margin-top: 20px;
 	margin-bottom: 10px;
 }
-.div-add-photo {
+.div-add-photo,
+.div-uploaded-photo {
 	margin-top: 36px;
 	width: 100%;
+	height: 169px;
 	background-color: #E8F1F7;
+}
+.image {
+	width: 129px;
+	height: 169px;
 }
 .div-add-photo i {
 	color: #CBD6DC;
 }
 .file-icon {
 	margin-top: 28px;
-	font-size: 58px;
-}
-.input-add-photo {
-	display: none;
+	font-size: 45px;
 }
 .button-add-label {
 	display: flex;
@@ -413,10 +432,24 @@ footer nav ul {
 .files-accepted {
 	margin-bottom: 19px;
 }
+.add-title-input {
+	padding-left: 16px;
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 16px;
+}
+input:focus {
+	outline: none;
+}
 .select-categories {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
     margin-bottom: 47px;
+	font-family: 'Work Sans';
+	font-size: 14px;
+	padding-left: 16px;
 }
 .validate-button {
 	width: 237px;

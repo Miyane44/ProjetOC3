@@ -44,7 +44,10 @@ const construcModalToAddWork = function() {
 
     const formElement = document.createElement("form");
     formElement.id = "add-photo";
+    formElement.name = "add-photo";
+    formElement.enctype = "multipart/form-data";
     formElement.className = "form-add-photo flex-column";
+    formElement.style.position = "relative";
 
     const divAddPhoto = document.createElement("div");
     divAddPhoto.className = "div-add-photo flex-center flex-column";
@@ -53,69 +56,92 @@ const construcModalToAddWork = function() {
     iconImage.className = "file-icon fa-sharp fa-regular fa-image";
 
     const inputAddLabel = document.createElement("label");
-    inputAddLabel.htmlFor = "photo";
+    inputAddLabel.htmlFor = "image";
     inputAddLabel.innerText = "+ Ajouter photo";
     inputAddLabel.className = "button-add-label";
 
     const inputAdd = document.createElement("input");
     inputAdd.type = "file";
-    inputAdd.id = "photo";
-    inputAdd.name = "photo";
-    inputAdd.accept = ".jpg, .png";
+    inputAdd.id = "image";
+    inputAdd.name = "image";
+    inputAdd.accept = ".jpg, .jpeg, .png";
+    inputAdd.required = "true";
     inputAdd.className = "input-add-photo";
+    inputAdd.hidden = true;
 
     const inputFilesAccepted = document.createElement("span");
     inputFilesAccepted.innerText = "jpg, png : 4mo max";
     inputFilesAccepted.className = "files-accepted";
     
+    const divUploadedPhoto = document.createElement("div");
+    divUploadedPhoto.className = "div-uploaded-photo flex-center flex-column";
+    
+    const imgElement = document.createElement("img");
+    imgElement.className = "image";
+    imgElement.src = "";
+    
     const titleLabel = document.createElement("label");
     titleLabel.innerText = "Titre";
-    titleLabel.htmlFor = "titre";
+    titleLabel.htmlFor = "title";
     titleLabel.className = "form-label";
 
     const titleInput = document.createElement("input");
     titleInput.type = "text";
-    titleInput.name = "titre";
-    titleInput.className = "add-photo-input modal-input width-100";
+    titleInput.name = "title";
+    titleInput.required = "true";
+    titleInput.className = "add-title-input modal-input";
+    titleInput.defaultValue = "";
 
     const selectLabel = document.createElement("label");
-    selectLabel.htmlFor = "categories";
+    selectLabel.htmlFor = "category";
     selectLabel.innerText = "Catégorie";
     selectLabel.className = "form-label";
 
     const selectCategories = document.createElement("select");
-    selectCategories.name = "categories";
+    selectCategories.name = "category";
+    selectCategories.required = "true";
     selectCategories.className = "select-categories width-100";
 
     const emptyOption = document.createElement("option");
+    emptyOption.value = "0";
+    selectCategories.defaultValue = emptyOption;
     selectCategories.appendChild(emptyOption);
 
     for (const category of categories) {
         const option = document.createElement("option");
         option.value = category.id;
         option.innerText = category.name;
+        option.className = "select-category"
         
         selectCategories.appendChild(option);
     }
 
-    const validateButton = document.createElement("button");
+    const validateButton = document.createElement("input");
     validateButton.className = "validate-button";
-    validateButton.innerText = "Valider";
+    validateButton.name = "validate-button";
+    validateButton.type = "submit";
+    validateButton.style.position = "absolute";
+    validateButton.style.bottom = "-92px";
+    validateButton.style.left = "91.5px";
+    validateButton.value = "Valider";
     
     divAddPhoto.appendChild(iconImage);
     divAddPhoto.appendChild(inputAddLabel);
     divAddPhoto.appendChild(inputAdd);
     divAddPhoto.appendChild(inputFilesAccepted);
-
+    
+    divUploadedPhoto.appendChild(imgElement);
+    
     formElement.appendChild(divAddPhoto);
+    formElement.appendChild(divUploadedPhoto);
     formElement.appendChild(titleLabel);
     formElement.appendChild(titleInput);
     formElement.appendChild(selectLabel);
     formElement.appendChild(selectCategories);
+    formElement.appendChild(validateButton);
 
     divElement.appendChild(h3Element);
     divElement.appendChild(formElement);
-    divElement.appendChild(validateButton);
 
     modalProjets.appendChild(divElement);
 }
@@ -129,6 +155,12 @@ const changeModalToAdd = function () {
 
     const modalAdd = document.querySelector(".modal-div-add-photo");
     modalAdd.style.display = "flex";
+
+    const addPhoto = document.querySelector('.div-add-photo');
+    addPhoto.style.display = "flex";
+    
+    const uploadedPhoto = document.querySelector('.div-uploaded-photo');
+    uploadedPhoto.style.display = "none";
 }
 
 const openModal = function (e) {
@@ -159,6 +191,11 @@ const closeModal = function (e) {
     modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
     modal = null;
+
+    const titre = document.querySelector(".add-title-input");
+    titre.value = "";
+    const category = document.querySelector(".select-categories");
+    category.value = "0";
 };
 
 const stopPropagation = function (e) {
@@ -170,3 +207,61 @@ document.querySelectorAll(".js-edit-modal").forEach( a => {
 });
 
 document.querySelector(".add-photo").addEventListener('click', changeModalToAdd);
+
+
+const input = document.querySelector("#image");
+
+input.addEventListener('change', function() {
+    const file = input.files[0];
+    if (file.length === 0) { return; }
+
+    if (file && file.type.startsWith('image/')) {
+
+        const addPhoto = document.querySelector('.div-add-photo');
+        addPhoto.style.display = "none";
+
+        const uploadedPhoto = document.querySelector('.div-uploaded-photo');
+        uploadedPhoto.style.display = "flex";
+
+        const imgElement = document.querySelector('.image');
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.addEventListener('load', (event) => {
+            imgElement.src = event.target.result;
+        });
+    } 
+});
+
+function validateForm(formData) {
+    const uploadedPhoto = formData.get('image');
+    const title = formData.get('title');
+    const category = formData.get('category');
+
+    const required = [title, category, uploadedPhoto];
+
+    const isValid = required.every(field => field !== null);
+    return isValid;
+}
+
+const addWork = async function (e) {
+    e.preventDefault();
+    let form = document.querySelector('.form-add-photo');
+    let formData = new FormData(form);
+    
+    const token = window.localStorage.getItem('token');
+    
+    if(validateForm(formData) && formData.has('image')) {
+        await fetch(`http://localhost:5678/api/works`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
+    }
+};
+
+const formElement = document.querySelector('.form-add-photo');
+formElement.addEventListener('submit', addWork);
