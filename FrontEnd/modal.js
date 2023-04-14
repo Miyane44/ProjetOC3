@@ -1,4 +1,4 @@
-import { categories, generateWorks, worksReponse } from "./works.js";
+import { categories } from "./works.js";
 
 let modal = null;
     
@@ -323,7 +323,6 @@ async function addWork(event) {
         
         if (reponse.status === 201) {
             console.log('Envoyé');
-
             const modalGallery = document.querySelector(".modal-div-gallery");
             modalGallery.style.display = "flex";
             

@@ -1,4 +1,4 @@
-import { generateWorks, works, worksReponse } from "./works.js";
+import { works } from "./works.js";
 
 let photos = [];
 
