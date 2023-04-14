@@ -267,26 +267,28 @@ function openModal(e) {
 };
 
 function closeModal(e) {
-    if (modal === null) return;
-    e.preventDefault();
-    modal.style.display = null;
-    modal.setAttribute('aria-hidden', 'true');
-    modal.removeAttribute('aria-modal');
-    modal.removeEventListener('click', closeModal);
-    modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
-    modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
-    modal = null;
+    console.log('coucou je me ferme');
+    return;
+    // if (modal === null) return;
+    // e.preventDefault();
+    // modal.style.display = null;
+    // modal.setAttribute('aria-hidden', 'true');
+    // modal.removeAttribute('aria-modal');
+    // modal.removeEventListener('click', closeModal);
+    // modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
+    // modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
+    // modal = null;
 
-    const titre = document.querySelector(".add-title-input");
-    titre.value = "";
-    const category = document.querySelector(".select-categories");
-    category.value = "";
+    // const titre = document.querySelector(".add-title-input");
+    // titre.value = "";
+    // const category = document.querySelector(".select-categories");
+    // category.value = "";
 
-    const buttonsModal = document.querySelector('.buttons-modal');
-    buttonsModal.style.justifyContent = "flex-end";
+    // const buttonsModal = document.querySelector('.buttons-modal');
+    // buttonsModal.style.justifyContent = "flex-end";
 
-    const buttonPrevious = document.querySelector('.button-previous');
-    buttonPrevious.style.display = "none";
+    // const buttonPrevious = document.querySelector('.button-previous');
+    // buttonPrevious.style.display = "none";
 };
 
 function stopPropagation(e) {

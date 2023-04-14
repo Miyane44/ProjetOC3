@@ -24,6 +24,7 @@ formulaire.addEventListener("submit", async function (event) {
             window.localStorage.setItem("token", reponse.token);
             
             if (reponse != undefined) {
+                console.log(reponse);
             document.location.href = "index.html";
             }
         
