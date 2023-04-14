@@ -324,7 +324,7 @@ footer nav ul {
 }
 .buttons-modal {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 }
 .button {
 	background-color: white;
@@ -332,9 +332,13 @@ footer nav ul {
 	margin-top: 32px;
 }
 .button-previous {
+	display: none;
 	text-align: start;
 	margin-left: 16px;
-	color: red;
+}
+.button-previous img {
+	width: 21px;
+	height: 14px;
 }
 .button-close {
 	text-align: end;
@@ -356,7 +360,7 @@ footer nav ul {
 	border-bottom: 1px solid #B3B3B3;
 	gap: 7px;
 }
-.gallery-photos .icon-delete {
+.gallery-photos .delete-link {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -367,7 +371,9 @@ footer nav ul {
 	height: 17px;
 	font-size: 9px;
 	color: #FFFFFF;
+	border: none;
 	background-color: #000000;
+	border-radius: 2px;
 }
 .gallery-photo {
 	width: 80px;
@@ -440,7 +446,8 @@ footer nav ul {
 	font-size: 14px;
 	line-height: 16px;
 }
-input:focus {
+.add-title-input:focus,
+.select-categories:focus {
 	outline: none;
 }
 .select-categories {
@@ -452,14 +459,11 @@ input:focus {
 	padding-left: 16px;
 }
 .validate-button {
-	width: 237px;
 	height: 36px;
-	color:#FFFFFF;
-	font-weight: 700;
 	font-size: 14px;
 	line-height: 17px;
-	background: #A7A7A7;
 	border: none;
-	border-radius: 60px;
-	margin: 2.3em auto 23px;
+}
+input[type="submit"].disabled {
+	background: #A7A7A7;
 }

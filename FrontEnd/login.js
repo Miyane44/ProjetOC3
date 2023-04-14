@@ -18,7 +18,7 @@ formulaire.addEventListener("submit", async function (event) {
             body: JSON.stringify(user)
         });
 
-        if (authData.ok === true) {
+        if (authData.status === 200) {
             const reponse = await authData.json();
             
             window.localStorage.setItem("token", reponse.token);

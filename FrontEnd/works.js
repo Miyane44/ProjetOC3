@@ -1,8 +1,8 @@
 // Récupération des travaux via l'API
-const worksReponse = await fetch("http://localhost:5678/api/works");
+export const worksReponse = await fetch("http://localhost:5678/api/works");
 export const works = await worksReponse.json();
 
-function generateWorks(works) {
+export function generateWorks(works) {
     for (let i = 0; i < works.length; i++) {
         
         const figure = works[i];

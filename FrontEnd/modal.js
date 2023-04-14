@@ -1,8 +1,75 @@
-import { categories } from "./works.js";
+import { categories, generateWorks, worksReponse } from "./works.js";
 
 let modal = null;
+    
+constructModalForGalleryPhotos();
+construcModalToAddWork();
 
-const constructModalForGalleryPhotos = function() {
+const buttonPrevious = document.querySelector('.button-previous');
+buttonPrevious.addEventListener('click', goBackToPreviousModal);
+
+const formElement = document.querySelector('.form-add-photo');
+formElement.addEventListener('change', enabledSubmitButton);
+formElement.addEventListener('submit', addWork);
+
+document.querySelectorAll(".js-edit-modal").forEach( a => {
+    a.addEventListener('click', openModal)
+});
+
+document.querySelector(".add-photo").addEventListener('click', changeModalToAdd);
+
+const input = document.querySelector("#image");
+
+input.addEventListener('change', function() {
+    console.log('change');
+    const file = input.files[0];
+    const maxSize = 4 * 1024 * 1024;
+
+    const errorImg = document.createElement('span');
+    errorImg.name = 'errorImg';
+    errorImg.className = "error one flex-center padding-top-20";
+    errorImg.textContent = "Votre image est trop volumineuse"
+
+    if (file.length === 0) { return; }
+
+    if (file && file.type.startsWith('image/')) {
+
+        if (file.size > maxSize) {
+            console.log('fichier trop volumineux');
+            formElement.appendChild(errorImg);
+            return;
+        }
+
+        const addPhoto = document.querySelector('.div-add-photo');
+        addPhoto.style.display = "none";
+
+        const uploadedPhoto = document.querySelector('.div-uploaded-photo');
+        uploadedPhoto.style.display = "flex";
+
+        const imgElement = document.querySelector('.image');
+        const imgInput = document.querySelector('#image');
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.addEventListener('load', (event) => {
+            imgElement.src = event.target.result;
+            imgInput.src = event.target.result;
+        });
+    } 
+});
+
+function enabledSubmitButton() {
+    const buttonSubmit = document.querySelector('.validate-button');
+    if (formElement.image.src !== '' && formElement.title.value !== '' && formElement.category.value !== '') {
+        buttonSubmit.classList.remove('disabled');
+        buttonSubmit.disabled = '';
+    } else {
+        buttonSubmit.classList.add('disabled');
+        buttonSubmit.disabled = 'true';
+    }
+}
+
+function constructModalForGalleryPhotos() {
     const modalProjets = document.querySelector(".modal-wrapper");
 
     const divElement = document.createElement("div");
@@ -32,7 +99,7 @@ const constructModalForGalleryPhotos = function() {
     modalProjets.appendChild(divElement);
 }
 
-const construcModalToAddWork = function() {
+function construcModalToAddWork() {
     const modalProjets = document.querySelector(".modal-wrapper");
 
     const divElement = document.createElement("div");
@@ -103,7 +170,7 @@ const construcModalToAddWork = function() {
     selectCategories.className = "select-categories width-100";
 
     const emptyOption = document.createElement("option");
-    emptyOption.value = "0";
+    emptyOption.value = "";
     selectCategories.defaultValue = emptyOption;
     selectCategories.appendChild(emptyOption);
 
@@ -117,7 +184,7 @@ const construcModalToAddWork = function() {
     }
 
     const validateButton = document.createElement("input");
-    validateButton.className = "validate-button";
+    validateButton.className = "validate-button disabled";
     validateButton.name = "validate-button";
     validateButton.type = "submit";
     validateButton.style.position = "absolute";
@@ -146,10 +213,7 @@ const construcModalToAddWork = function() {
     modalProjets.appendChild(divElement);
 }
 
-constructModalForGalleryPhotos();
-construcModalToAddWork();
-
-const changeModalToAdd = function () {
+function changeModalToAdd() {
     const modalGallery = document.querySelector(".modal-div-gallery");
     modalGallery.style.display = "none";
 
@@ -161,10 +225,31 @@ const changeModalToAdd = function () {
     
     const uploadedPhoto = document.querySelector('.div-uploaded-photo');
     uploadedPhoto.style.display = "none";
+
+    const buttonsModal = document.querySelector('.buttons-modal');
+    buttonsModal.style.justifyContent = "space-between";
+
+    const buttonPrevious = document.querySelector('.button-previous');
+    buttonPrevious.style.display = "flex";
 }
 
-const openModal = function (e) {
+function goBackToPreviousModal() {
+    const modalGallery = document.querySelector(".modal-div-gallery");
+    modalGallery.style.display = "flex";
+
+    const modalAdd = document.querySelector(".modal-div-add-photo");
+    modalAdd.style.display = "none";
+
+    const buttonsModal = document.querySelector('.buttons-modal');
+    buttonsModal.style.justifyContent = "flex-end";
+
+    const buttonPrevious = document.querySelector('.button-previous');
+    buttonPrevious.style.display = "none";
+}
+
+function openModal(e) {
     e.preventDefault();
+    
     const target = document.querySelector(e.target.getAttribute('href'));
     target.style.display = "flex";
     target.removeAttribute('aria-hidden');
@@ -181,7 +266,7 @@ const openModal = function (e) {
     modalAdd.style.display = "none";
 };
 
-const closeModal = function (e) {
+function closeModal(e) {
     if (modal === null) return;
     e.preventDefault();
     modal.style.display = null;
@@ -195,43 +280,18 @@ const closeModal = function (e) {
     const titre = document.querySelector(".add-title-input");
     titre.value = "";
     const category = document.querySelector(".select-categories");
-    category.value = "0";
+    category.value = "";
+
+    const buttonsModal = document.querySelector('.buttons-modal');
+    buttonsModal.style.justifyContent = "flex-end";
+
+    const buttonPrevious = document.querySelector('.button-previous');
+    buttonPrevious.style.display = "none";
 };
 
-const stopPropagation = function (e) {
+function stopPropagation(e) {
     e.stopPropagation();
 };
-
-document.querySelectorAll(".js-edit-modal").forEach( a => {
-    a.addEventListener('click', openModal)
-});
-
-document.querySelector(".add-photo").addEventListener('click', changeModalToAdd);
-
-
-const input = document.querySelector("#image");
-
-input.addEventListener('change', function() {
-    const file = input.files[0];
-    if (file.length === 0) { return; }
-
-    if (file && file.type.startsWith('image/')) {
-
-        const addPhoto = document.querySelector('.div-add-photo');
-        addPhoto.style.display = "none";
-
-        const uploadedPhoto = document.querySelector('.div-uploaded-photo');
-        uploadedPhoto.style.display = "flex";
-
-        const imgElement = document.querySelector('.image');
-
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.addEventListener('load', (event) => {
-            imgElement.src = event.target.result;
-        });
-    } 
-});
 
 function validateForm(formData) {
     const uploadedPhoto = formData.get('image');
@@ -241,27 +301,36 @@ function validateForm(formData) {
     const required = [title, category, uploadedPhoto];
 
     const isValid = required.every(field => field !== null);
+
     return isValid;
 }
 
-const addWork = async function (e) {
-    e.preventDefault();
+async function addWork(event) {
+    event.preventDefault();
     let form = document.querySelector('.form-add-photo');
     let formData = new FormData(form);
     
     const token = window.localStorage.getItem('token');
     
     if(validateForm(formData) && formData.has('image')) {
-        await fetch(`http://localhost:5678/api/works`, {
+        let reponse = await fetch(`http://localhost:5678/api/works`, {
             method: 'POST',
             body: formData,
             headers: {
                 'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json',
             }
         });
+        
+        if (reponse.status === 201) {
+            console.log('Envoyé');
+
+            const modalGallery = document.querySelector(".modal-div-gallery");
+            modalGallery.style.display = "flex";
+            
+            const modalAdd = document.querySelector(".modal-div-add-photo");
+            modalAdd.style.display = "none";
+        } else {
+            console.log("Echec");
+        }
     }
 };
-
-const formElement = document.querySelector('.form-add-photo');
-formElement.addEventListener('submit', addWork);

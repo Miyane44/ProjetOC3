@@ -1,4 +1,4 @@
-import { works } from "./works.js";
+import { generateWorks, works, worksReponse } from "./works.js";
 
 let photos = [];
 
@@ -24,16 +24,16 @@ function generatePhotos(works) {
         const divElement = document.createElement("div");
         divElement.style.position = "relative";
 
-        const linkElement = document.createElement("a");
+        const imgElement = document.createElement("img");
+        imgElement.src = figure;
+        imgElement.className = "gallery-photo"
+
+        const linkElement = document.createElement("button");
         linkElement.className = "delete-link clickable";
         
         const iconElement = document.createElement("i");
         iconElement.id = work.id;
         iconElement.className = "icon-delete fa-solid fa-trash-can";
-
-        const imgElement = document.createElement("img");
-        imgElement.src = figure;
-        imgElement.className = "gallery-photo"
 
         const caption = document.createElement("figcaption");
         caption.innerText = "éditer";
@@ -41,8 +41,8 @@ function generatePhotos(works) {
         galleryPhotos.appendChild(photoElement);
         photoElement.appendChild(divElement);
         linkElement.appendChild(iconElement);
-        divElement.appendChild(linkElement);
         divElement.appendChild(imgElement);
+        divElement.appendChild(linkElement);
         photoElement.appendChild(caption);
         
     }
@@ -51,15 +51,16 @@ function generatePhotos(works) {
 generatePhotos(works);
 
 document.querySelectorAll(".delete-link").forEach( a => {
-    a.addEventListener('click', async function (e) {
-        e.preventDefault();
-        const id = e.target.id;
-        const token = window.localStorage.getItem('token')
-        await fetch(`http://localhost:5678/api/works/${id}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-    })
-});
+    a.addEventListener('click', async function(event) {
+            event.preventDefault();
+            const id = event.target.id;
+            console.log(id);
+            const token = window.localStorage.getItem('token')
+            await fetch(`http://localhost:5678/api/works/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        })
+    });
