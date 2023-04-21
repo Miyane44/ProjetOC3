@@ -10,6 +10,7 @@ export function generateWorks(works) {
         const gallery = document.querySelector(".gallery");
 
         const workElement = document.createElement("figure");
+        workElement.id = figure.id;
 
         const imgElement = document.createElement("img");
         imgElement.src = figure.imageUrl;

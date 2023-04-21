@@ -16,12 +16,15 @@ document.querySelectorAll(".js-edit-modal").forEach( a => {
     a.addEventListener('click', openModal)
 });
 
+document.querySelectorAll(".delete-link").forEach( a => {
+    a.addEventListener('click', deleteWork)  
+});
+
 document.querySelector(".add-photo").addEventListener('click', changeModalToAdd);
 
 const input = document.querySelector("#image");
 
 input.addEventListener('change', function() {
-    console.log('change');
     const file = input.files[0];
     const maxSize = 4 * 1024 * 1024;
 
@@ -75,28 +78,15 @@ function constructModalForGalleryPhotos() {
     const divElement = document.createElement("div");
     divElement.className = "modal-div-gallery";
 
-    const h3Element = document.createElement("h3");
-    h3Element.innerText = "Galerie photo";
-    h3Element.className = "title-modal";
+    const galleryModal = `<h3 class="title-modal">Galerie photo</h3>
+    <div id="gallery-photos" class="gallery-photos"></div>
+    <input type="submit" value="Ajouter une photo" class="add-photo modal-input clickable">
+    <span class="delete-all-aworks">Supprimer la galerie</span>`;
 
-    const galleryElement = document.createElement("div");
-    galleryElement.id = "gallery-photos";
-    galleryElement.className = "gallery-photos";
+    divElement.innerHTML = galleryModal;
 
-    const inputElement = document.createElement("input");
-    inputElement.type = "submit";
-    inputElement.value = "Ajouter une photo";
-    inputElement.className = "add-photo modal-input";
-
-    const spanElement = document.createElement("span");
-    spanElement.classList = "delete-all-aworks";
-    spanElement.innerText = "Supprimer la galerie";
-    
-    divElement.appendChild(h3Element);
-    divElement.appendChild(galleryElement);
-    divElement.appendChild(inputElement);
-    divElement.appendChild(spanElement);
     modalProjets.appendChild(divElement);
+    
 }
 
 function construcModalToAddWork() {
@@ -105,110 +95,29 @@ function construcModalToAddWork() {
     const divElement = document.createElement("div");
     divElement.className = "modal-div-add-photo";
 
-    const h3Element = document.createElement("h3");
-    h3Element.className = "title-modal";
-    h3Element.innerText = "Ajout photo";
+    const addModal = `<h3 class="title-modal">Ajout photo</h3>
+    <form id="add-photo" name="add-photo" enctype="multipart/form-data" class="form-add-photo flex-column" style="position: relative;">
+    <div class="div-add-photo flex-center flex-column">
+    <i class="file-icon fa-sharp fa-regular fa-image"></i>
+    <label for="image" class="button-add-label clickable">+ Ajouter photo</label>
+    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" required="" class="input-add-photo" hidden="">
+    <span class="files-accepted">jpg, png : 4mo max</span>
+    </div>
+    <div class="div-uploaded-photo flex-center flex-column">
+    <img class="image" src=""></div>
+    <label for="title" class="form-label">Titre</label>
+    <input type="text" name="title" required="" class="add-title-input modal-input" value="">
+    <label for="category" class="form-label">Catégorie</label>
+    <select name="category" required="" class="select-categories width-100">
+    <option value=""></option>
+    <option value="1" class="select-category">Objets</option>
+    <option value="2" class="select-category">Appartements</option>
+    <option value="3" class="select-category">Hotels &amp; restaurants</option>
+    </select>
+    <input class="validate-button disabled" name="validate-button" type="submit" value="Valider" style="position: absolute; bottom: -92px; left: 91.5px;">
+    </form>`;
 
-    const formElement = document.createElement("form");
-    formElement.id = "add-photo";
-    formElement.name = "add-photo";
-    formElement.enctype = "multipart/form-data";
-    formElement.className = "form-add-photo flex-column";
-    formElement.style.position = "relative";
-
-    const divAddPhoto = document.createElement("div");
-    divAddPhoto.className = "div-add-photo flex-center flex-column";
-
-    const iconImage = document.createElement("i");
-    iconImage.className = "file-icon fa-sharp fa-regular fa-image";
-
-    const inputAddLabel = document.createElement("label");
-    inputAddLabel.htmlFor = "image";
-    inputAddLabel.innerText = "+ Ajouter photo";
-    inputAddLabel.className = "button-add-label";
-
-    const inputAdd = document.createElement("input");
-    inputAdd.type = "file";
-    inputAdd.id = "image";
-    inputAdd.name = "image";
-    inputAdd.accept = ".jpg, .jpeg, .png";
-    inputAdd.required = "true";
-    inputAdd.className = "input-add-photo";
-    inputAdd.hidden = true;
-
-    const inputFilesAccepted = document.createElement("span");
-    inputFilesAccepted.innerText = "jpg, png : 4mo max";
-    inputFilesAccepted.className = "files-accepted";
-    
-    const divUploadedPhoto = document.createElement("div");
-    divUploadedPhoto.className = "div-uploaded-photo flex-center flex-column";
-    
-    const imgElement = document.createElement("img");
-    imgElement.className = "image";
-    imgElement.src = "";
-    
-    const titleLabel = document.createElement("label");
-    titleLabel.innerText = "Titre";
-    titleLabel.htmlFor = "title";
-    titleLabel.className = "form-label";
-
-    const titleInput = document.createElement("input");
-    titleInput.type = "text";
-    titleInput.name = "title";
-    titleInput.required = "true";
-    titleInput.className = "add-title-input modal-input";
-    titleInput.defaultValue = "";
-
-    const selectLabel = document.createElement("label");
-    selectLabel.htmlFor = "category";
-    selectLabel.innerText = "Catégorie";
-    selectLabel.className = "form-label";
-
-    const selectCategories = document.createElement("select");
-    selectCategories.name = "category";
-    selectCategories.required = "true";
-    selectCategories.className = "select-categories width-100";
-
-    const emptyOption = document.createElement("option");
-    emptyOption.value = "";
-    selectCategories.defaultValue = emptyOption;
-    selectCategories.appendChild(emptyOption);
-
-    for (const category of categories) {
-        const option = document.createElement("option");
-        option.value = category.id;
-        option.innerText = category.name;
-        option.className = "select-category"
-        
-        selectCategories.appendChild(option);
-    }
-
-    const validateButton = document.createElement("input");
-    validateButton.className = "validate-button disabled";
-    validateButton.name = "validate-button";
-    validateButton.type = "submit";
-    validateButton.style.position = "absolute";
-    validateButton.style.bottom = "-92px";
-    validateButton.style.left = "91.5px";
-    validateButton.value = "Valider";
-    
-    divAddPhoto.appendChild(iconImage);
-    divAddPhoto.appendChild(inputAddLabel);
-    divAddPhoto.appendChild(inputAdd);
-    divAddPhoto.appendChild(inputFilesAccepted);
-    
-    divUploadedPhoto.appendChild(imgElement);
-    
-    formElement.appendChild(divAddPhoto);
-    formElement.appendChild(divUploadedPhoto);
-    formElement.appendChild(titleLabel);
-    formElement.appendChild(titleInput);
-    formElement.appendChild(selectLabel);
-    formElement.appendChild(selectCategories);
-    formElement.appendChild(validateButton);
-
-    divElement.appendChild(h3Element);
-    divElement.appendChild(formElement);
+    divElement.innerHTML = addModal;
 
     modalProjets.appendChild(divElement);
 }
@@ -267,28 +176,28 @@ function openModal(e) {
 };
 
 function closeModal(e) {
-    console.log('coucou je me ferme');
-    return;
-    // if (modal === null) return;
-    // e.preventDefault();
-    // modal.style.display = null;
-    // modal.setAttribute('aria-hidden', 'true');
-    // modal.removeAttribute('aria-modal');
-    // modal.removeEventListener('click', closeModal);
-    // modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
-    // modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
-    // modal = null;
+    if (modal === null) return;
+    e.preventDefault();
+    window.setTimeout(function() {
+        modal.style.display = "none";
+        modal = null;
+    }, 500)
+    modal.setAttribute('aria-hidden', 'true');
+    modal.removeAttribute('aria-modal');
+    modal.removeEventListener('click', closeModal);
+    modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
+    modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
 
-    // const titre = document.querySelector(".add-title-input");
-    // titre.value = "";
-    // const category = document.querySelector(".select-categories");
-    // category.value = "";
+    const titre = document.querySelector(".add-title-input");
+    titre.value = "";
+    const category = document.querySelector(".select-categories");
+    category.value = "";
 
-    // const buttonsModal = document.querySelector('.buttons-modal');
-    // buttonsModal.style.justifyContent = "flex-end";
+    const buttonsModal = document.querySelector('.buttons-modal');
+    buttonsModal.style.justifyContent = "flex-end";
 
-    // const buttonPrevious = document.querySelector('.button-previous');
-    // buttonPrevious.style.display = "none";
+    const buttonPrevious = document.querySelector('.button-previous');
+    buttonPrevious.style.display = "none";
 };
 
 function stopPropagation(e) {
@@ -322,16 +231,112 @@ async function addWork(event) {
                 'Authorization': 'Bearer ' + token,
             }
         });
-        
         if (reponse.status === 201) {
-            console.log('Envoyé');
-            const modalGallery = document.querySelector(".modal-div-gallery");
-            modalGallery.style.display = "flex";
+            console.log('Envoyé');                     
+
+            const worksReponse = await fetch("http://localhost:5678/api/works");
+            const works = await worksReponse.json();
             
-            const modalAdd = document.querySelector(".modal-div-add-photo");
-            modalAdd.style.display = "none";
+            generateNewElementWork(works);
+            generateNewElementGallery(works);
+
+            closeModal(event);
         } else {
             console.log("Echec");
         }
     }
 };
+
+function generateNewElementWork(works) {
+    const i = works.length - 1;
+    
+    const worksDiv = document.querySelector('.gallery');
+    const newFigure = document.createElement('figure');
+    newFigure.id = works[i].id;
+    
+    const figureImg = document.createElement('img');
+    figureImg.src = works[i].imageUrl;
+    figureImg.alt = works[i].title;
+    
+    const figureCaption = document.createElement('figcaption');
+    figureCaption.innerText = works[i].title;
+    
+    newFigure.appendChild(figureImg);
+    newFigure.appendChild(figureCaption);
+    
+    worksDiv.appendChild(newFigure);
+}
+
+function generateNewElementGallery(works) {
+    const i = works.length - 1;
+    
+    const galleryDiv = document.querySelector('.gallery-photos');
+    const newFigure = document.createElement('figure');
+    newFigure.id = works[i].id;
+
+    const newDiv = document.createElement('div');
+    newDiv.style.position = 'relative';
+    
+    const figureImg = document.createElement('img');
+    figureImg.src = works[i].imageUrl;
+    figureImg.className = "gallery-photo";
+
+    const figureButton = document.createElement('button');
+    figureButton.id = works[i].id;
+    figureButton.className = 'delete-link clickable';
+
+    figureButton.addEventListener('click', deleteWork);
+
+    const iconButton = document.createElement('i');
+    iconButton.id = works[i].id;
+    iconButton.className = 'icon-delete fa-solid fa-trash-can';
+
+    const figcaption = document.createElement('figcaption');
+    figcaption.innerText = 'éditer';
+    
+    figureButton.appendChild(iconButton);
+    newDiv.appendChild(figureImg);
+    newDiv.appendChild(figureButton);
+    newFigure.appendChild(newDiv);
+    newFigure.appendChild(figcaption);
+    galleryDiv.appendChild(newFigure);
+}
+
+async function deleteWork(event) {
+    console.log(event);
+    event.preventDefault();
+    event.stopPropagation();
+    const id = event.target.id;
+    console.log(id);
+    const token = window.localStorage.getItem('token');
+    console.log(token);
+    try {
+        fetch(`http://localhost:5678/api/works/${id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        deleteElementInWorks(id);
+        deleteElementInGallery(id);
+    } catch (error) {
+        log.error(error);
+        console.log(error);
+    }
+}
+
+function deleteElementInGallery(id) {
+
+    const galleryDiv = document.querySelector('.gallery-photos');
+    const elementDeleted = document.getElementById(id);
+
+    galleryDiv.removeChild(elementDeleted);
+}
+
+function deleteElementInWorks(id) {
+
+    const worksDiv = document.querySelector('.gallery');
+    const elementDeleted = document.getElementById(id);
+
+    worksDiv.removeChild(elementDeleted);
+}
