@@ -1,4 +1,4 @@
-import { categories } from "./works.js";
+
 
 let modal = null;
     
@@ -16,32 +16,27 @@ document.querySelectorAll(".js-edit-modal").forEach( a => {
     a.addEventListener('click', openModal)
 });
 
-document.querySelectorAll(".delete-link").forEach( a => {
-    a.addEventListener('click', deleteWork)  
-});
-
 document.querySelector(".add-photo").addEventListener('click', changeModalToAdd);
 
 const input = document.querySelector("#image");
 
 input.addEventListener('change', function() {
+    if (input.files.length === 0) { return; }
+
     const file = input.files[0];
     const maxSize = 4 * 1024 * 1024;
 
-    const errorImg = document.createElement('span');
-    errorImg.name = 'errorImg';
-    errorImg.className = "error one flex-center padding-top-20";
-    errorImg.textContent = "Votre image est trop volumineuse"
-
-    if (file.length === 0) { return; }
+    const errorImg = document.querySelector('.error-image');
 
     if (file && file.type.startsWith('image/')) {
 
         if (file.size > maxSize) {
             console.log('fichier trop volumineux');
-            formElement.appendChild(errorImg);
+            errorImg.style.display = null;
             return;
         }
+
+        errorImg.style.display = "none";
 
         const addPhoto = document.querySelector('.div-add-photo');
         addPhoto.style.display = "none";
@@ -63,12 +58,20 @@ input.addEventListener('change', function() {
 
 function enabledSubmitButton() {
     const buttonSubmit = document.querySelector('.validate-button');
-    if (formElement.image.src !== '' && formElement.title.value !== '' && formElement.category.value !== '') {
+
+    const photoInput = document.querySelector('.input-add-photo');
+    const titleInput = document.querySelector('.add-title-input');
+    const categoryInput = document.querySelector('.select-categories');
+
+    // console.log('photoInput.src', photoInput.src)
+    // console.log('titleInput.value', titleInput.value)
+    // console.log('categoryInput.value', formElement.category.value)
+
+    // TODO vérifier avec Lucien, la raison pour laquelle src = http://127.0.0.1:5501/index.html
+    if (formElement.image.src && formElement.title.value && formElement.category.value) {
         buttonSubmit.classList.remove('disabled');
-        buttonSubmit.disabled = '';
     } else {
         buttonSubmit.classList.add('disabled');
-        buttonSubmit.disabled = 'true';
     }
 }
 
@@ -100,21 +103,23 @@ function construcModalToAddWork() {
     <div class="div-add-photo flex-center flex-column">
     <i class="file-icon fa-sharp fa-regular fa-image"></i>
     <label for="image" class="button-add-label clickable">+ Ajouter photo</label>
-    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" required="" class="input-add-photo" hidden="">
+    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" class="input-add-photo" hidden="" src="">
     <span class="files-accepted">jpg, png : 4mo max</span>
     </div>
     <div class="div-uploaded-photo flex-center flex-column">
     <img class="image" src=""></div>
     <label for="title" class="form-label">Titre</label>
-    <input type="text" name="title" required="" class="add-title-input modal-input" value="">
+    <input type="text" name="title" class="add-title-input modal-input" value="">
     <label for="category" class="form-label">Catégorie</label>
-    <select name="category" required="" class="select-categories width-100">
+    <select name="category" class="select-categories width-100">
     <option value=""></option>
     <option value="1" class="select-category">Objets</option>
     <option value="2" class="select-category">Appartements</option>
     <option value="3" class="select-category">Hotels &amp; restaurants</option>
     </select>
     <input class="validate-button disabled" name="validate-button" type="submit" value="Valider" style="position: absolute; bottom: -92px; left: 91.5px;">
+    <span class="error error-image one flex-center padding-top-20" style="display: none;">Votre image est trop volumineuse</span>
+    <span class="error error-inputs one flex-center padding-top-20" style="display: none;">Merci de renseigner la totalité des champs</span>
     </form>`;
 
     divElement.innerHTML = addModal;
@@ -143,6 +148,15 @@ function changeModalToAdd() {
 }
 
 function goBackToPreviousModal() {
+    const imageInput = document.querySelector('.input-add-photo');
+    imageInput.src = "";
+    const imageUploaded = document.querySelector('.div-uploaded-photo');
+    imageUploaded.src = "";
+    const titre = document.querySelector(".add-title-input");
+    titre.value = "";
+    const category = document.querySelector(".select-categories");
+    category.value = "";
+
     const modalGallery = document.querySelector(".modal-div-gallery");
     modalGallery.style.display = "flex";
 
@@ -188,6 +202,10 @@ function closeModal(e) {
     modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
 
+    const imageInput = document.querySelector('.input-add-photo');
+    imageInput.src = "";
+    const imageUploaded = document.querySelector('.div-uploaded-photo');
+    imageUploaded.src = "";
     const titre = document.querySelector(".add-title-input");
     titre.value = "";
     const category = document.querySelector(".select-categories");
@@ -217,13 +235,24 @@ function validateForm(formData) {
 }
 
 async function addWork(event) {
+    console.log('addWork');
     event.preventDefault();
     let form = document.querySelector('.form-add-photo');
     let formData = new FormData(form);
+
+    if (!formElement.image.src || !formElement.title.value || !formElement.category.value) {
+        console.log('test');
+        const errorInputs = document.querySelector('.error-inputs');
+        errorInputs.style.display = "flex";
+    } else {   
+        const errorInputs = document.querySelector('.error-inputs');
+        errorInputs.style.display = "none";    
+    }
     
     const token = window.localStorage.getItem('token');
     
     if(validateForm(formData) && formData.has('image')) {
+
         let reponse = await fetch(`http://localhost:5678/api/works`, {
             method: 'POST',
             body: formData,
@@ -232,7 +261,7 @@ async function addWork(event) {
             }
         });
         if (reponse.status === 201) {
-            console.log('Envoyé');                     
+            console.log('Envoyé');              
 
             const worksReponse = await fetch("http://localhost:5678/api/works");
             const works = await worksReponse.json();
@@ -302,14 +331,12 @@ function generateNewElementGallery(works) {
     galleryDiv.appendChild(newFigure);
 }
 
-async function deleteWork(event) {
-    console.log(event);
+export async function deleteWork(event) {
+    console.log('delete');
     event.preventDefault();
     event.stopPropagation();
     const id = event.target.id;
-    console.log(id);
     const token = window.localStorage.getItem('token');
-    console.log(token);
     try {
         fetch(`http://localhost:5678/api/works/${id}`, {
             method: 'DELETE',
@@ -320,7 +347,6 @@ async function deleteWork(event) {
         deleteElementInWorks(id);
         deleteElementInGallery(id);
     } catch (error) {
-        log.error(error);
         console.log(error);
     }
 }
@@ -340,3 +366,4 @@ function deleteElementInWorks(id) {
 
     worksDiv.removeChild(elementDeleted);
 }
+

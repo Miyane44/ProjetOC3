@@ -1,4 +1,6 @@
 import { works } from "./works.js";
+import { deleteWork } from "./modal.js";
+
 
 let photos = [];
 
@@ -32,6 +34,8 @@ function generatePhotos(works) {
         const linkElement = document.createElement("button");
         linkElement.id = work.id;
         linkElement.className = "delete-link clickable";
+
+        linkElement.addEventListener('click', deleteWork);
         
         const iconElement = document.createElement("i");
         iconElement.id = work.id;
@@ -51,4 +55,3 @@ function generatePhotos(works) {
 }
 
 generatePhotos(works);
-
