@@ -1,5 +1,3 @@
-
-
 let modal = null;
     
 constructModalForGalleryPhotos();
@@ -11,6 +9,8 @@ buttonPrevious.addEventListener('click', goBackToPreviousModal);
 const formElement = document.querySelector('.form-add-photo');
 formElement.addEventListener('change', enabledSubmitButton);
 formElement.addEventListener('submit', addWork);
+
+console.log(Array.of(...new FormData(formElement)));
 
 document.querySelectorAll(".js-edit-modal").forEach( a => {
     a.addEventListener('click', openModal)
@@ -45,13 +45,11 @@ input.addEventListener('change', function() {
         uploadedPhoto.style.display = "flex";
 
         const imgElement = document.querySelector('.image');
-        const imgInput = document.querySelector('#image');
 
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.addEventListener('load', (event) => {
             imgElement.src = event.target.result;
-            imgInput.src = event.target.result;
         });
     } 
 });
@@ -59,20 +57,12 @@ input.addEventListener('change', function() {
 function enabledSubmitButton() {
     const buttonSubmit = document.querySelector('.validate-button');
 
-    const photoInput = document.querySelector('.input-add-photo');
-    const titleInput = document.querySelector('.add-title-input');
-    const categoryInput = document.querySelector('.select-categories');
+    const formElement = document.querySelector('.form-add-photo');
 
-    // console.log('photoInput.src', photoInput.src)
-    // console.log('titleInput.value', titleInput.value)
-    // console.log('categoryInput.value', formElement.category.value)
+    const isValid = Array.of(...new FormData(formElement)).every(([_, value]) => value);
 
-    // TODO vérifier avec Lucien, la raison pour laquelle src = http://127.0.0.1:5501/index.html
-    if (formElement.image.src && formElement.title.value && formElement.category.value) {
-        buttonSubmit.classList.remove('disabled');
-    } else {
-        buttonSubmit.classList.add('disabled');
-    }
+    isValid ? buttonSubmit.classList.remove('disabled') : buttonSubmit.classList.add('disabled');
+    isValid ? buttonSubmit.disabled = '' : buttonSubmit.disabled = 'true';
 }
 
 function constructModalForGalleryPhotos() {
@@ -89,7 +79,6 @@ function constructModalForGalleryPhotos() {
     divElement.innerHTML = galleryModal;
 
     modalProjets.appendChild(divElement);
-    
 }
 
 function construcModalToAddWork() {
@@ -99,11 +88,11 @@ function construcModalToAddWork() {
     divElement.className = "modal-div-add-photo";
 
     const addModal = `<h3 class="title-modal">Ajout photo</h3>
-    <form id="add-photo" name="add-photo" enctype="multipart/form-data" class="form-add-photo flex-column" style="position: relative;">
+    <form id="add-photo" name="add-photo" class="form-add-photo flex-column" style="position: relative;">
     <div class="div-add-photo flex-center flex-column">
     <i class="file-icon fa-sharp fa-regular fa-image"></i>
     <label for="image" class="button-add-label clickable">+ Ajouter photo</label>
-    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" class="input-add-photo" hidden="" src="">
+    <input class="input-add-photo" type="file" id="image" name="image" accept=".jpg, .jpeg, .png" hidden="">
     <span class="files-accepted">jpg, png : 4mo max</span>
     </div>
     <div class="div-uploaded-photo flex-center flex-column">
@@ -148,10 +137,6 @@ function changeModalToAdd() {
 }
 
 function goBackToPreviousModal() {
-    const imageInput = document.querySelector('.input-add-photo');
-    imageInput.src = "";
-    const imageUploaded = document.querySelector('.div-uploaded-photo');
-    imageUploaded.src = "";
     const titre = document.querySelector(".add-title-input");
     titre.value = "";
     const category = document.querySelector(".select-categories");
@@ -201,11 +186,6 @@ function closeModal(e) {
     modal.removeEventListener('click', closeModal);
     modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
-
-    const imageInput = document.querySelector('.input-add-photo');
-    imageInput.src = "";
-    const imageUploaded = document.querySelector('.div-uploaded-photo');
-    imageUploaded.src = "";
     const titre = document.querySelector(".add-title-input");
     titre.value = "";
     const category = document.querySelector(".select-categories");
@@ -235,27 +215,24 @@ function validateForm(formData) {
 }
 
 async function addWork(event) {
-    console.log('addWork');
     event.preventDefault();
-    let form = document.querySelector('.form-add-photo');
-    let formData = new FormData(form);
+    const form = new FormData(formElement);
 
-    if (!formElement.image.src || !formElement.title.value || !formElement.category.value) {
-        console.log('test');
-        const errorInputs = document.querySelector('.error-inputs');
-        errorInputs.style.display = "flex";
-    } else {   
-        const errorInputs = document.querySelector('.error-inputs');
-        errorInputs.style.display = "none";    
-    }
+    const isValid = Array.of(...form)
+    .map(([_, value]) => value)
+    .every((item) => item);
+    
+    const errorInputs = document.querySelector('.error-inputs');
+
+    isValid ? errorInputs.style.display = "none" : errorInputs.style.display = "flex";
     
     const token = window.localStorage.getItem('token');
     
-    if(validateForm(formData) && formData.has('image')) {
+    if(validateForm(form) && form.has('image')) {
 
         let reponse = await fetch(`http://localhost:5678/api/works`, {
             method: 'POST',
-            body: formData,
+            body: form,
             headers: {
                 'Authorization': 'Bearer ' + token,
             }
@@ -332,20 +309,21 @@ function generateNewElementGallery(works) {
 }
 
 export async function deleteWork(event) {
-    console.log('delete');
     event.preventDefault();
     event.stopPropagation();
     const id = event.target.id;
     const token = window.localStorage.getItem('token');
     try {
-        fetch(`http://localhost:5678/api/works/${id}`, {
+        let reponse = fetch(`http://localhost:5678/api/works/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        deleteElementInWorks(id);
-        deleteElementInGallery(id);
+        if (reponse.status === 204) {
+            deleteElementInWorks(id);
+            deleteElementInGallery(id);
+        }
     } catch (error) {
         console.log(error);
     }

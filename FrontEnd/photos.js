@@ -1,7 +1,6 @@
 import { works } from "./works.js";
 import { deleteWork } from "./modal.js";
 
-
 let photos = [];
 
 function photosToGenerate() {
