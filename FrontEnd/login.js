@@ -3,7 +3,7 @@ const formulaire = document.querySelector(".formulaire-login");
 formulaire.addEventListener("submit", async function (event) {
     event.preventDefault();
     
-    const user = {
+    let user = {
         email: event.target.querySelector("[name=email]").value,
         password: event.target.querySelector("[name=password]").value
     };
@@ -33,10 +33,14 @@ formulaire.addEventListener("submit", async function (event) {
     } catch (error) {
         const formElement = document.querySelector(".formulaire-login");
 
-        const erreur = document.createElement("span");
-        erreur.innerText = "Erreur dans l'identifiant ou le mot de passe"
-        erreur.className = "error flex-center one";
+        const loginError = document.querySelector('.error-login');
+
+        if (!loginError) {
+            const erreur = document.createElement("span");
+            erreur.innerText = "Erreur dans l'identifiant ou le mot de passe"
+            erreur.className = "error error-login flex-center one";
 
         formElement.appendChild(erreur);
+        }
     }
 });

@@ -28,26 +28,35 @@ function generatePhotos(works) {
 
         const imgElement = document.createElement("img");
         imgElement.src = figure;
-        imgElement.className = "gallery-photo"
+        imgElement.className = "gallery-photo";
 
-        const linkElement = document.createElement("button");
-        linkElement.id = work.id;
-        linkElement.className = "delete-link clickable";
-
-        linkElement.addEventListener('click', deleteWork);
+        const moveButton = document.createElement("button");
+        moveButton.className = "move-button clickable";
         
-        const iconElement = document.createElement("i");
-        iconElement.id = work.id;
-        iconElement.className = "icon-delete fa-solid fa-trash-can";
+        const moveIcon = document.createElement("img");
+        moveIcon.className = "move-icon";
+        moveIcon.src = "assets/icons/arrow.png";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.id = work.id;
+        deleteButton.className = "delete-link clickable";
+
+        deleteButton.addEventListener('click', deleteWork);
+        
+        const deleteIcon = document.createElement("i");
+        deleteIcon.id = work.id;
+        deleteIcon.className = "icon-delete fa-solid fa-trash-can";
 
         const caption = document.createElement("figcaption");
         caption.innerText = "éditer";
 
         galleryPhotos.appendChild(photoElement);
         photoElement.appendChild(divElement);
-        linkElement.appendChild(iconElement);
+        moveButton.appendChild(moveIcon);
+        deleteButton.appendChild(deleteIcon);
         divElement.appendChild(imgElement);
-        divElement.appendChild(linkElement);
+        divElement.appendChild(moveButton);
+        divElement.appendChild(deleteButton);
         photoElement.appendChild(caption);
 
     }

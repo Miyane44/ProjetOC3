@@ -10,8 +10,6 @@ const formElement = document.querySelector('.form-add-photo');
 formElement.addEventListener('change', enabledSubmitButton);
 formElement.addEventListener('submit', addWork);
 
-console.log(Array.of(...new FormData(formElement)));
-
 document.querySelectorAll(".js-edit-modal").forEach( a => {
     a.addEventListener('click', openModal)
 });
@@ -59,10 +57,9 @@ function enabledSubmitButton() {
 
     const formElement = document.querySelector('.form-add-photo');
 
-    const isValid = Array.of(...new FormData(formElement)).every(([_, value]) => value);
+    const isValid = Array.of(...formElement).every((item) => !!item.value);
 
     isValid ? buttonSubmit.classList.remove('disabled') : buttonSubmit.classList.add('disabled');
-    isValid ? buttonSubmit.disabled = '' : buttonSubmit.disabled = 'true';
 }
 
 function constructModalForGalleryPhotos() {
@@ -96,7 +93,7 @@ function construcModalToAddWork() {
     <span class="files-accepted">jpg, png : 4mo max</span>
     </div>
     <div class="div-uploaded-photo flex-center flex-column">
-    <img class="image" src=""></div>
+    <img class="image"></div>
     <label for="title" class="form-label">Titre</label>
     <input type="text" name="title" class="add-title-input modal-input" value="">
     <label for="category" class="form-label">Catégorie</label>
@@ -137,10 +134,15 @@ function changeModalToAdd() {
 }
 
 function goBackToPreviousModal() {
+    const image = document.querySelector(".input-add-photo");
+    image.value = "";
     const titre = document.querySelector(".add-title-input");
     titre.value = "";
     const category = document.querySelector(".select-categories");
     category.value = "";
+
+    const errorInputs = document.querySelector('.error-inputs');
+    errorInputs.style.display = "none";
 
     const modalGallery = document.querySelector(".modal-div-gallery");
     modalGallery.style.display = "flex";
@@ -186,10 +188,16 @@ function closeModal(e) {
     modal.removeEventListener('click', closeModal);
     modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
+
+    const image = document.querySelector(".input-add-photo");
+    image.value = "";
     const titre = document.querySelector(".add-title-input");
     titre.value = "";
     const category = document.querySelector(".select-categories");
     category.value = "";
+
+    const errorInputs = document.querySelector('.error-inputs');
+    errorInputs.style.display = "none";
 
     const buttonsModal = document.querySelector('.buttons-modal');
     buttonsModal.style.justifyContent = "flex-end";
@@ -202,25 +210,11 @@ function stopPropagation(e) {
     e.stopPropagation();
 };
 
-function validateForm(formData) {
-    const uploadedPhoto = formData.get('image');
-    const title = formData.get('title');
-    const category = formData.get('category');
-
-    const required = [title, category, uploadedPhoto];
-
-    const isValid = required.every(field => field !== null);
-
-    return isValid;
-}
-
 async function addWork(event) {
     event.preventDefault();
     const form = new FormData(formElement);
 
-    const isValid = Array.of(...form)
-    .map(([_, value]) => value)
-    .every((item) => item);
+    const isValid = Array.of(...formElement).every((item) => !!item.value);
     
     const errorInputs = document.querySelector('.error-inputs');
 
@@ -228,27 +222,27 @@ async function addWork(event) {
     
     const token = window.localStorage.getItem('token');
     
-    if(validateForm(form) && form.has('image')) {
+    if(isValid && form.has('image')) {
+        try {
+            let reponse = await fetch(`http://localhost:5678/api/works`, {
+                method: 'POST',
+                body: form,
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                }
+            });
+            if (reponse.status === 201) {
 
-        let reponse = await fetch(`http://localhost:5678/api/works`, {
-            method: 'POST',
-            body: form,
-            headers: {
-                'Authorization': 'Bearer ' + token,
+                const worksReponse = await fetch("http://localhost:5678/api/works");
+                const works = await worksReponse.json();
+                
+                generateNewElementWork(works);
+                generateNewElementGallery(works);
+                
+                closeModal(event);
             }
-        });
-        if (reponse.status === 201) {
-            console.log('Envoyé');              
-
-            const worksReponse = await fetch("http://localhost:5678/api/works");
-            const works = await worksReponse.json();
-            
-            generateNewElementWork(works);
-            generateNewElementGallery(works);
-
-            closeModal(event);
-        } else {
-            console.log("Echec");
+        } catch(error) {
+            console.log(error);
         }
     }
 };
@@ -287,6 +281,13 @@ function generateNewElementGallery(works) {
     figureImg.src = works[i].imageUrl;
     figureImg.className = "gallery-photo";
 
+    const moveButton = document.createElement("button");
+    moveButton.className = "move-button clickable";
+    
+    const moveIcon = document.createElement("img");
+    moveIcon.className = "move-icon";
+    moveIcon.src = "assets/icons/arrow.png";
+
     const figureButton = document.createElement('button');
     figureButton.id = works[i].id;
     figureButton.className = 'delete-link clickable';
@@ -301,8 +302,10 @@ function generateNewElementGallery(works) {
     figcaption.innerText = 'éditer';
     
     figureButton.appendChild(iconButton);
+    moveButton.appendChild(moveIcon);
     newDiv.appendChild(figureImg);
     newDiv.appendChild(figureButton);
+    newDiv.appendChild(moveButton);
     newFigure.appendChild(newDiv);
     newFigure.appendChild(figcaption);
     galleryDiv.appendChild(newFigure);
@@ -314,7 +317,7 @@ export async function deleteWork(event) {
     const id = event.target.id;
     const token = window.localStorage.getItem('token');
     try {
-        let reponse = fetch(`http://localhost:5678/api/works/${id}`, {
+        let reponse = await fetch(`http://localhost:5678/api/works/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`

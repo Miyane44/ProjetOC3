@@ -32,8 +32,8 @@ body {
 	line-height: 1;
 }
 main {
-	margin-left: 95px;
-	margin-right: 95px;
+	margin-left: 245px;
+	margin-right: 245px;
 }
 ol, ul {
 	list-style: none;
@@ -52,10 +52,14 @@ table {
 }
 /** end reset css**/
 body {
-	max-width: 1140px;
+	max-width: 1440px;
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: #FFFEF8;
+}
+footer {
+	margin-right: 107px;
 }
 .clickable {
 	cursor: pointer;
@@ -113,7 +117,7 @@ body {
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px 150px;
 }
 section {
 	margin: 50px 0
@@ -173,7 +177,6 @@ a {
 #introduction img,
 .edit {
 	display: block;
-	margin: auto;
 	width: 80%;
 }
 .edit {
@@ -384,6 +387,21 @@ footer nav ul {
 	align-items: center;
 	position: absolute;
 	right: 6px;
+	top: 6px;
+	width: 17px;
+	height: 17px;
+	font-size: 9px;
+	color: #FFFFFF;
+	border: none;
+	background-color: #000000;
+	border-radius: 2px;
+}
+.gallery-photos .move-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	right: 26px;
 	top: 6px;
 	width: 17px;
 	height: 17px;
