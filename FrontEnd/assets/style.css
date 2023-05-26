@@ -67,6 +67,10 @@ footer {
 .error {
 	color: red;
 }
+.error-delete {
+	padding-top: 20px;
+	font-size: 14px;
+}
 .padding-top-20 {
 	padding-top: 20px;
 }
@@ -275,7 +279,7 @@ a {
 #contact input,
 #login input,
 #modal .modal-input {
-	height: 50px;
+	height: 36px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -300,7 +304,6 @@ input[type="submit"] {
 }
 #modal input[type="submit"] {
 	width: 237px;
-	margin: 2.3em auto 23px;
 }
 footer nav ul {
 	display: flex;
@@ -376,8 +379,8 @@ footer nav ul {
 	flex-wrap: wrap;
 	margin-left: 100px;
 	margin-right: 100px;
-	padding-top: 45px;
-	padding-bottom: 66px;
+	padding-top: 40px;
+	padding-bottom: 47px;
 	border-bottom: 1px solid #B3B3B3;
 	gap: 7px;
 }
@@ -397,7 +400,7 @@ footer nav ul {
 	border-radius: 2px;
 }
 .gallery-photos .move-button {
-	display: flex;
+	display: none;
 	justify-content: center;
 	align-items: center;
 	position: absolute;
@@ -411,7 +414,10 @@ footer nav ul {
 	background-color: #000000;
 	border-radius: 2px;
 }
-.gallery-photo {
+.work:hover > .move-button {
+	display: flex;
+}
+.work-photo {
 	width: 80px;
 	height: 105px;
 }
@@ -494,7 +500,7 @@ footer nav ul {
 	font-size: 14px;
 	padding-left: 16px;
 }
-.validate-button {
+#modal input[type="submit"].validate-button {
 	height: 36px;
 	font-size: 14px;
 	line-height: 17px;
@@ -502,4 +508,9 @@ footer nav ul {
 }
 input[type="submit"].disabled {
 	background: #A7A7A7;
+}
+.add-photo,
+.contact-button,
+.connexion-button {
+	margin: 38px 195px 23px;
 }

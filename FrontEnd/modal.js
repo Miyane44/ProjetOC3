@@ -199,6 +199,9 @@ function closeModal(e) {
     const errorInputs = document.querySelector('.error-inputs');
     errorInputs.style.display = "none";
 
+    const errorDelete = document.querySelector('.error-delete');
+    errorDelete.style.display = "none";
+
     const buttonsModal = document.querySelector('.buttons-modal');
     buttonsModal.style.justifyContent = "flex-end";
 
@@ -279,7 +282,7 @@ function generateNewElementGallery(works) {
     
     const figureImg = document.createElement('img');
     figureImg.src = works[i].imageUrl;
-    figureImg.className = "gallery-photo";
+    figureImg.className = "work-photo";
 
     const moveButton = document.createElement("button");
     moveButton.className = "move-button clickable";
@@ -326,9 +329,21 @@ export async function deleteWork(event) {
         if (reponse.status === 204) {
             deleteElementInWorks(id);
             deleteElementInGallery(id);
+        } else {
+            throw new Error("Impossible de supprimer le travail, veuilez vous connecter");
         }
     } catch (error) {
-        console.log(error);
+        const galleryElement = document.querySelector(".title-modal");
+
+        const deleteError = document.querySelector('.error-delete');
+
+        if (!deleteError) {
+            const erreur = document.createElement("span");
+            erreur.innerText = error.message;
+            erreur.className = "error error-delete one flex-center";
+
+            galleryElement.appendChild(erreur);
+        }
     }
 }
 

@@ -25,10 +25,11 @@ function generatePhotos(works) {
 
         const divElement = document.createElement("div");
         divElement.style.position = "relative";
+        divElement.className = "work"
 
         const imgElement = document.createElement("img");
         imgElement.src = figure;
-        imgElement.className = "gallery-photo";
+        imgElement.className = "work-photo";
 
         const moveButton = document.createElement("button");
         moveButton.className = "move-button clickable";

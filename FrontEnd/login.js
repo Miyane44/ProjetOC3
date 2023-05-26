@@ -37,7 +37,7 @@ formulaire.addEventListener("submit", async function (event) {
 
         if (!loginError) {
             const erreur = document.createElement("span");
-            erreur.innerText = "Erreur dans l'identifiant ou le mot de passe"
+            erreur.innerText = error.message;
             erreur.className = "error error-login flex-center one";
 
         formElement.appendChild(erreur);
