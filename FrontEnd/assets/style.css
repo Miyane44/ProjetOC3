@@ -67,7 +67,8 @@ footer {
 .error {
 	color: red;
 }
-.error-delete {
+.error-delete,
+.error-add-work {
 	padding-top: 20px;
 	font-size: 14px;
 }
@@ -368,7 +369,8 @@ footer nav ul {
 	text-align: end;
 	margin-right: 16px;
 }
-.title-modal {
+.title-modal,
+.title-modal-add-photo {
 	margin-top: 16px;
 	text-align: center;
 	font-weight: 400;

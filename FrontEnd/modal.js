@@ -29,7 +29,6 @@ input.addEventListener('change', function() {
     if (file && file.type.startsWith('image/')) {
 
         if (file.size > maxSize) {
-            console.log('fichier trop volumineux');
             errorImg.style.display = null;
             return;
         }
@@ -84,7 +83,7 @@ function construcModalToAddWork() {
     const divElement = document.createElement("div");
     divElement.className = "modal-div-add-photo";
 
-    const addModal = `<h3 class="title-modal">Ajout photo</h3>
+    const addModal = `<h3 class="title-modal-add-photo">Ajout photo</h3>
     <form id="add-photo" name="add-photo" class="form-add-photo flex-column" style="position: relative;">
     <div class="div-add-photo flex-center flex-column">
     <i class="file-icon fa-sharp fa-regular fa-image"></i>
@@ -133,7 +132,10 @@ function changeModalToAdd() {
     buttonPrevious.style.display = "flex";
 
     const errorDelete = document.querySelector('.error-delete');
-    errorDelete.style.display = "none";
+
+    if(errorDelete) {
+        errorDelete.style.display = "none";
+    }
 }
 
 function goBackToPreviousModal() {
@@ -145,8 +147,15 @@ function goBackToPreviousModal() {
     category.value = "";
 
     const errorInputs = document.querySelector('.error-inputs');
-    errorInputs.style.display = "none";
+    if(errorInputs) {
+        errorInputs.style.display = "none";
+    }
 
+    const errorAddWork = document.querySelector('.error-add-work');
+    if(errorAddWork) {
+        errorAddWork.style.display = "none";
+    }
+    
     const modalGallery = document.querySelector(".modal-div-gallery");
     modalGallery.style.display = "flex";
 
@@ -200,10 +209,19 @@ function closeModal(e) {
     category.value = "";
 
     const errorInputs = document.querySelector('.error-inputs');
-    errorInputs.style.display = "none";
+    if(errorInputs) {
+        errorInputs.style.display = "none";
+    }
 
     const errorDelete = document.querySelector('.error-delete');
-    errorDelete.style.display = "none";
+    if(errorDelete) {
+        errorDelete.style.display = "none";
+    }
+    
+    const errorAddWork = document.querySelector('.error-add-work');
+    if(errorAddWork) {
+        errorAddWork.style.display = "none";
+    }
 
     const buttonsModal = document.querySelector('.buttons-modal');
     buttonsModal.style.justifyContent = "flex-end";
@@ -246,9 +264,21 @@ async function addWork(event) {
                 generateNewElementGallery(works);
                 
                 closeModal(event);
+            } else {
+                throw new Error("Impossible d'ajouter le travail, veuilez vous connecter");
             }
         } catch(error) {
-            console.log(error);
+            const addElement = document.querySelector(".title-modal-add-photo");
+
+            const addError = document.querySelector('.error-add-work');
+
+            if (!addError) {
+                const erreur = document.createElement("span");
+                erreur.innerText = error.message;
+                erreur.className = "error error-add-work flex-center";
+
+                addElement.appendChild(erreur);
+            }
         }
     }
 };
