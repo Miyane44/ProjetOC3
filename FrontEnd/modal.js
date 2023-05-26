@@ -131,6 +131,9 @@ function changeModalToAdd() {
 
     const buttonPrevious = document.querySelector('.button-previous');
     buttonPrevious.style.display = "flex";
+
+    const errorDelete = document.querySelector('.error-delete');
+    errorDelete.style.display = "none";
 }
 
 function goBackToPreviousModal() {
