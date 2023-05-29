@@ -1,4 +1,9 @@
+import { works } from "./works.js";
+
 let modal = null;
+
+const categoriesReponse = await fetch("http://localhost:5678/api/categories");
+const categories = await categoriesReponse.json();
     
 constructModalForGalleryPhotos();
 construcModalToAddWork();
@@ -98,9 +103,6 @@ function construcModalToAddWork() {
     <label for="category" class="form-label">Catégorie</label>
     <select name="category" class="select-categories width-100">
     <option value=""></option>
-    <option value="1" class="select-category">Objets</option>
-    <option value="2" class="select-category">Appartements</option>
-    <option value="3" class="select-category">Hotels &amp; restaurants</option>
     </select>
     <input class="validate-button disabled" name="validate-button" type="submit" value="Valider" style="position: absolute; bottom: -92px; left: 91.5px;">
     <span class="error error-image one flex-center padding-top-20" style="display: none;">Votre image est trop volumineuse</span>
@@ -110,6 +112,21 @@ function construcModalToAddWork() {
     divElement.innerHTML = addModal;
 
     modalProjets.appendChild(divElement);
+}
+
+categories.forEach(category => addCategoriesToAddWork(category));
+
+function addCategoriesToAddWork(category) {
+    
+    const selectElement = document.querySelector('.select-categories');
+    
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.innerText = category.name;
+    option.className = "select-category";
+
+    selectElement.appendChild(option);
+    
 }
 
 function changeModalToAdd() {
@@ -256,12 +273,10 @@ async function addWork(event) {
                 }
             });
             if (reponse.status === 201) {
-
-                const worksReponse = await fetch("http://localhost:5678/api/works");
-                const works = await worksReponse.json();
+                const data = await reponse.json();
                 
-                generateNewElementWork(works);
-                generateNewElementGallery(works);
+                generateNewElementWork(data);
+                generateNewElementGallery(data);
                 
                 closeModal(event);
             } else {
@@ -283,19 +298,17 @@ async function addWork(event) {
     }
 };
 
-function generateNewElementWork(works) {
-    const i = works.length - 1;
-    
+function generateNewElementWork(data) {
     const worksDiv = document.querySelector('.gallery');
     const newFigure = document.createElement('figure');
-    newFigure.id = works[i].id;
+    newFigure.id = data.id;
     
     const figureImg = document.createElement('img');
-    figureImg.src = works[i].imageUrl;
-    figureImg.alt = works[i].title;
+    figureImg.src = data.imageUrl;
+    figureImg.alt = data.title;
     
     const figureCaption = document.createElement('figcaption');
-    figureCaption.innerText = works[i].title;
+    figureCaption.innerText = data.title;
     
     newFigure.appendChild(figureImg);
     newFigure.appendChild(figureCaption);
@@ -303,18 +316,16 @@ function generateNewElementWork(works) {
     worksDiv.appendChild(newFigure);
 }
 
-function generateNewElementGallery(works) {
-    const i = works.length - 1;
-    
+function generateNewElementGallery(data) {    
     const galleryDiv = document.querySelector('.gallery-photos');
     const newFigure = document.createElement('figure');
-    newFigure.id = works[i].id;
+    newFigure.id = data.id;
 
     const newDiv = document.createElement('div');
     newDiv.style.position = 'relative';
     
     const figureImg = document.createElement('img');
-    figureImg.src = works[i].imageUrl;
+    figureImg.src = data.imageUrl;
     figureImg.className = "work-photo";
 
     const moveButton = document.createElement("button");
@@ -325,13 +336,13 @@ function generateNewElementGallery(works) {
     moveIcon.src = "assets/icons/arrow.png";
 
     const figureButton = document.createElement('button');
-    figureButton.id = works[i].id;
+    figureButton.id = data.id;
     figureButton.className = 'delete-link clickable';
 
     figureButton.addEventListener('click', deleteWork);
 
     const iconButton = document.createElement('i');
-    iconButton.id = works[i].id;
+    iconButton.id = data.id;
     iconButton.className = 'icon-delete fa-solid fa-trash-can';
 
     const figcaption = document.createElement('figcaption');

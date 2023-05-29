@@ -33,22 +33,25 @@ const categoriesReponse = await fetch("http://localhost:5678/api/categories")
 export const categories = await categoriesReponse.json();
 
 function generateFilters(categories) {
+        
+    const categoriesElement = document.querySelector(".categories");
     
     const filterAll = document.createElement("button");
         filterAll.innerText = "Tous";
         filterAll.className = "category-button one category-all active";
+        filterAll.setAttribute("data-id", 0);
+
+        categoriesElement.appendChild(filterAll);
 
     for (let i = 0; i < categories.length; i++) {
-        
-        const categoriesElement = document.querySelector(".categories");
         
         const category = categories[i];
         
         const filter = document.createElement("button");
         filter.innerText = category.name;
         filter.className = "category-button clickable category-" + category.id;
+        filter.setAttribute("data-id", category.id);
         
-        categoriesElement.appendChild(filterAll);
         categoriesElement.appendChild(filter);
         
     }    
@@ -58,18 +61,16 @@ generateFilters(categories);
 
 /// Gestion des filtres
 function filterSelection(categorieId) {
+    if (categorieId === '0') {
+        document.querySelector(".gallery").innerHTML = "";
+        generateWorks(works);
+        return;
+    }
     const filteredWorks = works.filter(function (work) {
-        return work.categoryId === categorieId;
+        return work.categoryId.toString() === categorieId;
     });
     document.querySelector(".gallery").innerHTML = "";
     generateWorks(filteredWorks);
-}
-
-const filters = {
-    filterAll : document.querySelector(".category-all"),
-    objetsFilter : document.querySelector(".category-1"),
-    appartementsFilter : document.querySelector(".category-2"),
-    hotelsFilter : document.querySelector(".category-3")
 }
 
 const toggleSelectedClass = (element) => {
@@ -84,23 +85,10 @@ const toggleSelectedClass = (element) => {
     });
 }
 
-filters.filterAll.addEventListener("click", function () {
-    document.querySelector(".gallery").innerHTML = "";
-    toggleSelectedClass("filterAll");
-    generateWorks(works);
-});
+const filters = document.querySelectorAll('.category-button');
 
-filters.objetsFilter.addEventListener("click", function () {
-    filterSelection(1);
-    toggleSelectedClass("objetsFilter");
-});
-
-filters.appartementsFilter.addEventListener("click", function () {
-    filterSelection(2);
-    toggleSelectedClass("appartementsFilter");
-});
-
-filters.hotelsFilter.addEventListener("click", function () {
-    filterSelection(3);
-    toggleSelectedClass("hotelsFilter");
-});
+filters.forEach(filter => filter.addEventListener("click", function () {
+    const categoryId = filter.getAttribute('data-id');
+    toggleSelectedClass(categoryId);
+    filterSelection(categoryId);
+}))
